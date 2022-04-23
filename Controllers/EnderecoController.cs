@@ -28,32 +28,34 @@ namespace FilmeAPI.Controllers
             return CreatedAtAction(nameof(RecuperaEnderecosPorId), new { Id = endereco.Id }, endereco);
         }
 
-        public IActionResult RecuperaEnderecosPorId(int id)
+        [HttpGet]
+        public IEnumerable<Endereco> RecuperaEnderecos()
         {
-            return Ok();
-        }
-
-        /*[HttpGet]
-        public IActionResult RecuperaEnderecos()
-        {
-            List<ReadEnderecoDto> readDto = _context.RecuperaEnderecos();
-            if (readDto == null) return NotFound();
-            return Ok(readDto);
+            return _context.Enderecos;
         }
 
         [HttpGet("{id}")]
         public IActionResult RecuperaEnderecosPorId(int id)
         {
-            ReadEnderecoDto readDto = _context.RecuperaEnderecosPorId(id);
-            if (readDto == null) return NotFound();
-            return Ok(readDto);
+            Endereco endereco = _context.Enderecos.FirstOrDefault(endereco => endereco.Id == id);
+            if (endereco != null)
+            {
+                ReadEnderecoDto enderecoDto = _mapper.Map<ReadEnderecoDto>(endereco);
+                return Ok(enderecoDto);
+            }
+            return NotFound();
         }
 
         [HttpPut("{id}")]
         public IActionResult AtualizaEndereco(int id, [FromBody] UpdateEnderecoDto enderecoDto)
         {
-            Result resultado = _context.AtualizaEndereco(id, enderecoDto);
-            if (resultado.IsFailed) return NotFound();
+            Endereco endereco = _context.Enderecos.FirstOrDefault(endereco => endereco.Id == id);
+            if (endereco == null)
+            {
+                return NotFound();
+            }
+            _mapper.Map(enderecoDto, endereco);
+            _context.SaveChanges();
             return NoContent();
         }
 
@@ -61,9 +63,15 @@ namespace FilmeAPI.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeletaEndereco(int id)
         {
-            Result resultado = _context.DeletaEndereco(id);
-            if (resultado.IsFailed) return NotFound();
+            Endereco endereco = _context.Enderecos.FirstOrDefault(endereco => endereco.Id == id);
+            if (endereco == null)
+            {
+                return NotFound();
+            }
+            _context.Remove(endereco);
+            _context.SaveChanges();
             return NoContent();
-        }*/
+        }
+
     }
 }
