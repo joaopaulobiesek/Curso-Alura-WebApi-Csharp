@@ -36,7 +36,7 @@ namespace FilmeAPI.Controllers
             {
                 ReadGerenteDto gerenteDto = _mapper.Map<ReadGerenteDto>(gerente);
 
-                return Ok(gerente);
+                return Ok(gerenteDto);
             }
             return NotFound();
         }
