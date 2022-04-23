@@ -1,4 +1,5 @@
-﻿using FilmeAPI.Models;
+﻿
+using FilmeAPI.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace FilmeAPI.Data.Dtos
@@ -11,5 +12,6 @@ namespace FilmeAPI.Data.Dtos
         [Required(ErrorMessage = "O campo de nome é obrigatório")]
         public string Nome { get; set; }
         public Endereco Endereco { get; set; }
+        public Gerente Gerente { get; set; }
     }
 }
