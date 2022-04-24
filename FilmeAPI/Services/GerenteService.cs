@@ -2,56 +2,51 @@
 using FilmeApi.Data;
 using FilmeAPI.Data.Dtos;
 using FilmeAPI.Models;
-using Microsoft.AspNetCore.Mvc;
+using FluentResults;
 
-namespace FilmeAPI.Controllers
+namespace FilmeAPI.Services
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class GerenteController : ControllerBase
+    public class GerenteService
     {
         private AppDbContext _context;
         private IMapper _mapper;
 
-        public GerenteController(AppDbContext context, IMapper mapper)
+        public GerenteService(AppDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
         }
 
-        [HttpPost]
-        public IActionResult AdicionaGerente(CreateGerenteDto dto)
+        public ReadGerenteDto AdicionaGerente(CreateGerenteDto dto)
         {
             Gerente gerente = _mapper.Map<Gerente>(dto);
             _context.Gerentes.Add(gerente);
             _context.SaveChanges();
-            return CreatedAtAction(nameof(RecuperaGerentePorId), new { Id = gerente.Id }, gerente);
+            return _mapper.Map<ReadGerenteDto>(gerente);
         }
 
-        [HttpGet("{id}")]
-        public IActionResult RecuperaGerentePorId(int id)
+        public ReadGerenteDto RecuperaGerentePorId(int id)
         {
             Gerente gerente = _context.Gerentes.FirstOrDefault(gerente => gerente.Id == id);
             if (gerente != null)
             {
                 ReadGerenteDto gerenteDto = _mapper.Map<ReadGerenteDto>(gerente);
 
-                return Ok(gerenteDto);
+                return gerenteDto;
             }
-            return NotFound();
+            return null;
         }
 
-        [HttpDelete("{id}")]
-        public IActionResult DeletaGerente(int id)
+        public Result DeletaGerente(int id)
         {
             Gerente gerente = _context.Gerentes.FirstOrDefault(gerente => gerente.Id == id);
             if (gerente == null)
             {
-                return NotFound();
+                return Result.Fail("Gerente não encontrado");
             }
             _context.Remove(gerente);
             _context.SaveChanges();
-            return NoContent();
+            return Result.Ok();
         }
     }
 }
