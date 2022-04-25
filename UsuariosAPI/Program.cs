@@ -5,6 +5,7 @@ using UsuariosAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//builder.Host.ConfigureAppConfiguration((context, builders) => builders.AddUserSecrets<Program>()); Para Ativar User-Secrets Colocar Informaçoes no PC
 // Add services to the container.
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
