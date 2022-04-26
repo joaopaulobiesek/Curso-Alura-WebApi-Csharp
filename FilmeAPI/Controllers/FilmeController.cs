@@ -1,6 +1,7 @@
 ﻿using FilmeAPI.Data.Dtos;
 using FilmeAPI.Services;
 using FluentResults;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FilmeAPI.Controllers
@@ -18,6 +19,7 @@ namespace FilmeAPI.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public IActionResult AdicionaFilme([FromBody] CreateFilmeDto filmeDto)
         {
             ReadFilmeDto readDto = _filmeService.AdicionaFilme(filmeDto);            
