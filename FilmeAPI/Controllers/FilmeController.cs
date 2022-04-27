@@ -17,9 +17,8 @@ namespace FilmeAPI.Controllers
             _filmeService = filmeService;
         }
 
-
         [HttpPost]
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin, regular")]
         public IActionResult AdicionaFilme([FromBody] CreateFilmeDto filmeDto)
         {
             ReadFilmeDto readDto = _filmeService.AdicionaFilme(filmeDto);            

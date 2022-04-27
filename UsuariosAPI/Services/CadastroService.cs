@@ -28,11 +28,7 @@ namespace UsuariosAPI.Services
             Usuario usuario = _mapper.Map<Usuario>(createDto);
             IdentityUser<int> identityUser = _mapper.Map<IdentityUser<int>>(usuario);
             var resultadoIdentity = _userManager.CreateAsync(identityUser, createDto.Password).Result;
-
-            var createRole = _roleManager.CreateAsync(new IdentityRole<int>("admin")).Result;
-
-           var addRole = _userManager.AddToRoleAsync(identityUser, "admin").Result;
-
+            var addRole = _userManager.AddToRoleAsync(identityUser, "regular").Result;
             if (resultadoIdentity.Succeeded)
             {
                 var code = _userManager.GenerateEmailConfirmationTokenAsync(identityUser).Result;
