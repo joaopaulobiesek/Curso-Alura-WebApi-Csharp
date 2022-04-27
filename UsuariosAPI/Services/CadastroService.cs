@@ -11,29 +11,27 @@ namespace UsuariosAPI.Services
     public class CadastroService
     {
         private IMapper _mapper;
-        private UserManager<IdentityUser<int>> _userManager;
+        private UserManager<CustomIdentityUser> _userManager;
         private EmailService _emailService;
-        private RoleManager<IdentityRole<int>> _roleManager;
 
-        public CadastroService(IMapper mapper, UserManager<IdentityUser<int>> userManager, EmailService emailService, RoleManager<IdentityRole<int>> roleManager)
+        public CadastroService(IMapper mapper, UserManager<CustomIdentityUser> userManager, EmailService emailService)
         {
             _mapper = mapper;
             _userManager = userManager;
             _emailService = emailService;
-            _roleManager = roleManager;
         }
 
         public Result CadastraUsuario(CreateUsuarioDto createDto)
         {
             Usuario usuario = _mapper.Map<Usuario>(createDto);
-            IdentityUser<int> identityUser = _mapper.Map<IdentityUser<int>>(usuario);
+            CustomIdentityUser identityUser = _mapper.Map<CustomIdentityUser>(usuario);
             var resultadoIdentity = _userManager.CreateAsync(identityUser, createDto.Password).Result;
             var addRole = _userManager.AddToRoleAsync(identityUser, "regular").Result;
             if (resultadoIdentity.Succeeded)
             {
                 var code = _userManager.GenerateEmailConfirmationTokenAsync(identityUser).Result;
                 var encodeCode = HttpUtility.UrlEncode(code);
-                //_emailService.EnviarEmail(new[] { identityUser.Email}, "Link de Ativação", identityUser.Id, encodeCode);
+                _emailService.EnviarEmail(new[] { identityUser.Email}, "Link de Ativação", identityUser.Id, encodeCode);
                 return Result.Ok().WithSuccess(code);
             }
             return Result.Fail("Falha ao cadastrar Usuário");

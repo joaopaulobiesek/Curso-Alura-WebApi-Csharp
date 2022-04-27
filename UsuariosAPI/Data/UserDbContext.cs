@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using UsuariosAPI.Models;
 
 namespace UsuariosAPI.Data
 {
-    public class UserDbContext : IdentityDbContext<IdentityUser<int>, IdentityRole<int>, int>
+    public class UserDbContext : IdentityDbContext<CustomIdentityUser, IdentityRole<int>, int>
     {
         public UserDbContext(DbContextOptions<UserDbContext> opt) : base(opt)
         {
@@ -15,7 +16,7 @@ namespace UsuariosAPI.Data
         {
             base.OnModelCreating(builder);
 
-            IdentityUser<int> admin = new IdentityUser<int>
+            CustomIdentityUser admin = new CustomIdentityUser
             {
                 UserName = "admin",
                 NormalizedUserName = "ADMIN",
@@ -23,14 +24,15 @@ namespace UsuariosAPI.Data
                 NormalizedEmail = "ADMIN@ADMIN.com",
                 EmailConfirmed = true,
                 SecurityStamp = Guid.NewGuid().ToString(),
+                DataNascimento = DateTime.Now,
                 Id = 99999
             };
 
-            PasswordHasher<IdentityUser<int>> passwordHasher = new PasswordHasher<IdentityUser<int>>();
+            PasswordHasher<CustomIdentityUser> passwordHasher = new PasswordHasher<CustomIdentityUser>();
 
             admin.PasswordHash = passwordHasher.HashPassword(admin, "Admin123!");
 
-            builder.Entity<IdentityUser<int>>().HasData(admin);
+            builder.Entity<CustomIdentityUser>().HasData(admin);
 
             builder.Entity<IdentityRole<int>>().HasData(new IdentityRole<int> { Id = 99999, Name = "admin", NormalizedName = "ADMIN" });
             

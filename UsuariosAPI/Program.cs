@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using UsuariosAPI.Data;
+using UsuariosAPI.Models;
 using UsuariosAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,7 +13,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<UserDbContext>(options =>
         options.UseSqlServer(connectionString));
 
-builder.Services.AddIdentity<IdentityUser<int>, IdentityRole<int>>(opt =>
+builder.Services.AddIdentity<CustomIdentityUser, IdentityRole<int>>(opt =>
 {
     opt.SignIn.RequireConfirmedEmail = true;
 })

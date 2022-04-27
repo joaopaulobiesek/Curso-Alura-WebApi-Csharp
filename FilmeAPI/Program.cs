@@ -1,6 +1,8 @@
 using FilmeApi.Data;
+using FilmeAPI.Authorization;
 using FilmeAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -31,6 +33,16 @@ builder.Services.AddAuthentication(auth =>
         ClockSkew = TimeSpan.Zero
     };
 });
+
+builder.Services.AddAuthorization(o =>
+{
+    o.AddPolicy("IdadeMinima", policy =>
+    {
+        policy.Requirements.Add(new IdadeMinimaRequirement(18));
+    });
+});
+
+builder.Services.AddSingleton<IAuthorizationHandler, IdadeMinimaHandler>();
 
 builder.Services.AddScoped<FilmeService, FilmeService>();
 builder.Services.AddScoped<CinemaService, CinemaService>();
